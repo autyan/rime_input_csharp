@@ -136,7 +136,7 @@ namespace RimeInputCSharp
 
             internal int      PageNo;
 
-            internal RimeBool IsLastPage;
+            internal bool     IsLastPage;
 
             internal int      HighlightedCandidateIndex;
 
@@ -200,21 +200,21 @@ namespace RimeInputCSharp
             /// <summary>
             /// CSharp Data Type : String
             /// </summary>
-            internal IntPtr   SchemaName;
+            internal IntPtr SchemaName;
 
-            internal RimeBool IsDisabled;
+            internal bool IsDisabled;
 
-            internal RimeBool IsComposing;
+            internal bool IsComposing;
 
-            internal RimeBool IsAsciiMode;
+            internal bool IsAsciiMode;
 
-            internal RimeBool IsFullShape;
+            internal bool IsFullShape;
 
-            internal RimeBool IsSimplified;
+            internal bool IsSimplified;
 
-            internal RimeBool IsTraditional;
+            internal bool IsTraditional;
 
-            internal RimeBool IsAsciiPunct;
+            internal bool IsAsciiPunct;
         }
 
         internal struct RimeCandidateListIterator
@@ -280,16 +280,33 @@ namespace RimeInputCSharp
             internal IntPtr Reserved;
         }
 
-        internal struct RimeSchemaList
-        {
-            internal ulong  Size;
+        //internal struct RimeSchemaList
+        //{
+        //    internal ulong  Size;
 
-            /// <summary>
-            /// Original Data Type : RimeSchemaListItem
-            /// </summary>
-            internal IntPtr List;
-        }
-        ;
+        //    /// <summary>
+        //    /// Original Data Type : RimeSchemaListItem
+        //    /// </summary>
+        //    internal IntPtr List;
+        //}
+
+        //internal abstract class RimeCustomApi
+        //{
+        //    internal int DataSize;
+        //}
+
+        //internal abstract class RimeModule
+        //{
+        //    internal int DataSize;
+
+        //    internal IntPtr ModuleName;
+
+        //    internal abstract void Initialize();
+
+        //    internal abstract void Finalize();
+
+        //    internal abstract IntPtr GetApi();
+        //}
 
         #endregion
 
@@ -335,21 +352,441 @@ namespace RimeInputCSharp
         internal static extern void RimeFinalize();
 
         [DllImport(DllPath)]
-        internal static extern RimeBool RimeStartMaintenance(RimeBool fullCheck);
+        internal static extern bool RimeStartMaintenance(bool fullCheck);
 
         [DllImport(DllPath)]
-        internal static extern RimeBool RimeIsMaintenancing();
+        internal static extern bool RimeIsMaintenancing();
 
         [DllImport(DllPath)]
         internal static extern void RimeJoinMaintenanceThread();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="traits">ptr for RimeTraits</param>
+        [DllImport(DllPath)]
+        internal static extern void RimeDeployerInitialize(IntPtr traits);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimePrebuildAllSchemas();
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeDeployWorkspace();
+
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeDeploySchema(string schemaFile);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeDeployConfigFile(string fileName,  string versionKey);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeSyncUserData();
+
+        [DllImport(DllPath)]
+        internal static extern ulong RimeCreateSession();
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeFindSession(ulong sessionId);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeDestroySession(ulong sessionId);
+
+        [DllImport(DllPath)]
+        internal static extern void RimeCleanupStaleSessions();
+
+        [DllImport(DllPath)]
+        internal static extern void RimeCleanupAllSessions();
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeProcessKey(ulong sessionId, int keycode, int mask);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeCommitComposition(ulong sessionId);
+
+        [DllImport(DllPath)]
+        internal static extern void RimeClearComposition(ulong sessionId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="commit">ptr for RimeCommit</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetCommit(ulong sessionId, IntPtr commit);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commit">RimeCommit</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeFreeCommit(IntPtr commit);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="context">ptr for RimeContext</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetContext(ulong sessionId, IntPtr context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context">ptr for RimeContext</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeFreeContext(IntPtr context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="status">ptr for RimeStatus</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetStatus(long sessionId, IntPtr status);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status">ptr for RimeStatus</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeFreeStatus(IntPtr status);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="iterator">ptr for RimeCandidateListIterator</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeCandidateListBegin(ulong sessionId, IntPtr iterator);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeCandidateListIterator</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeCandidateListNext(IntPtr iterator);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeCandidateListIterator</param>
+        [DllImport(DllPath)]
+        internal static extern void RimeCandidateListEnd(IntPtr iterator);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="iterator">ptr for RimeCandidateListIterator</param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeCandidateListFromIndex(ulong  sessionId,
+                                                               IntPtr iterator,
+                                                               int    index);
+
+        [DllImport(DllPath)]
+        internal static extern void RimeSetOption(ulong sessionId,  string option, bool value);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetOption(ulong sessionId,  string option);
+
+        [DllImport(DllPath)]
+        internal static extern void RimeSetProperty(ulong sessionId,  string prop,  string value);
+
+        [DllImport(DllPath)]
+        internal static extern void RimeGetProperty(ulong sessionId, string prop, out string value, ulong bufferSize);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="schemaList">ptr for RimeSchemaList</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetSchemaList(IntPtr schemaList);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="schemaList">ptr for RimeSchemaList</param>
+        [DllImport(DllPath)]
+        internal static extern void RimeFreeSchemaList(IntPtr schemaList);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeGetCurrentSchema(ulong sessionId, out string schemaId, ulong bufferSize);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeSelectSchema(ulong sessionId,  string schemaId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="schemaId"></param>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeSchemaOpen(string schemaId, IntPtr config);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigOpen(string configId, IntPtr config);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeUserConfigOpen(string configId, IntPtr config);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigClose(IntPtr config);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigInit(IntPtr config);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="yaml"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigLoadString(IntPtr config, string yaml);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigGetBool(IntPtr config, string key, ref bool value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigGetInt(IntPtr config, string key, ref int value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigGetDouble(IntPtr config, string key, ref double value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="bufferSize"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigGetString(IntPtr config, string key, string value, ulong bufferSize);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern string RimeConfigGetCString(IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigSetBool(IntPtr config, string key, bool value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigSetInt(IntPtr config,  string key,  int value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigSetDouble(IntPtr config, string key,  double value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigSetString(IntPtr config, string key, string value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigGetItem(IntPtr config,  string key, IntPtr value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <param name="value">ptr for RimeConfig</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigSetItem(IntPtr config, string key, IntPtr value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigClear(IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigCreateList(IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigCreateMap(IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern ulong RimeConfigListSize(IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeConfigIterator</param>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigBeginList(IntPtr iterator, IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeConfigIterator</param>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigBeginMap(IntPtr iterator, IntPtr config, string key);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeConfigIterator</param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigNext(IntPtr iterator);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iterator">ptr for RimeConfigIterator</param>
+        [DllImport(DllPath)]
+        internal static extern void RimeConfigEnd(IntPtr iterator);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config">ptr for RimeConfig</param>
+        /// <param name="signer"></param>
+        /// <returns></returns>
+        [DllImport(DllPath)]
+        internal static extern bool RimeConfigUpdateSignature(IntPtr config, string signer);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeSimulateKeySequence(ulong sessionId,  string keySequence);
+
+        [DllImport(DllPath)]
+        internal static extern bool RimeRunTask(string taskName);
+
+        [DllImport(DllPath)]
+        internal static extern string RimeGetSharedDataDir();
+
+        [DllImport(DllPath)]
+        internal static extern string RimeGetUserDataDir();
+
+        [DllImport(DllPath)]
+        internal static extern string RimeGetSyncDir();
+
+        [DllImport(DllPath)]
+        internal static extern string RimeGetUserId();
+
         #endregion
-    }
-
-    public enum RimeBool
-    {
-        False = 0,
-
-        True = 1
     }
 }
